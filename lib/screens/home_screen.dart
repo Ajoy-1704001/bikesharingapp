@@ -53,10 +53,14 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     // _checkpermissionAndLocation();
     getData();
-
+    customMarker();
     uid.value = _auth.currentUser.uid;
     super.initState();
-    customMarker();
+  }
+
+  void customMarker() async {
+    marker = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), 'assets/images/cycle_icon.png');
   }
 
   @override
@@ -87,34 +91,31 @@ class _HomeScreenState extends State<HomeScreen> {
       _circle.add(Circle(
           circleId: CircleId("1"),
           center: Data.mapCenter,
-          radius: 500,
+          radius: 2000,
           strokeWidth: 3));
-
-      _markers.add(Marker(
-        markerId: MarkerId("Hello1"),
-        icon: marker,
-        position: LatLng(22.939655, 91.284065),
-      ));
+      getVehicles();
     });
   }
 
   getVehicles() async {
     Set<Marker> list = {};
-    await for (var snapshots in _firestore.collection("vehicles").snapshots()) {
-      LatLong latLong = LatLong(snapshots.docs[0].data()['cordinate']);
-      list.add(Marker(
-        markerId: MarkerId(snapshots.docs[0].id),
-        icon: marker,
-        position: LatLng(latLong.geoPoint.latitude, latLong.geoPoint.longitude),
-      ));
-    }
+    CollectionReference ref = _firestore.collection('vehicles');
+    await ref.get().then((value) {
+      for (int i = 0; i < value.docs.length; i++) {
+        //print(value.docs[i].data()["cordinate"].latitude);
+        print(value.docs[i].id);
+        GeoPoint geoPoint = value.docs[i].data()['cordinate'];
+        Marker _marker = new Marker(
+          markerId: MarkerId(value.docs[i].id),
+          position: LatLng(geoPoint.latitude, geoPoint.longitude),
+          icon: marker,
+        );
+        list.add(_marker);
+      }
+    });
     setState(() {
       this._markers = list;
+      print(_markers.length);
     });
-  }
-
-  void customMarker() async {
-    marker = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), 'assets/images/dot.png');
   }
 }
