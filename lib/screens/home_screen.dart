@@ -39,20 +39,20 @@ class _HomeScreenState extends State<HomeScreen> {
   double lon;
   bool isPermission = false;
   BitmapDescriptor marker;
-  Set<Circle> _circle = {
-    Circle(
-        circleId: CircleId("1"),
-        center: Data.mapCenter,
-        radius: 500,
-        strokeWidth: 3)
-  };
+  Set<Circle> _circle = {};
   Set<Marker> _markers = {};
+  static final CameraPosition _initialCamera =
+      CameraPosition(target: LatLng(23.8103, 90.4125), zoom: 15);
+
+  getData() {
+    getUser();
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     // _checkpermissionAndLocation();
-    data = getUser();
+    getData();
 
     uid.value = _auth.currentUser.uid;
     super.initState();
@@ -61,47 +61,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      data = getUser();
-    });
-    return FutureBuilder<DocumentSnapshot>(
-        future: data,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            balance.value = snapshot.data.data()['balance'];
-            return Scaffold(
-                appBar: CustomAppbar(_myHomeState),
-                drawer: CustomDrawer(),
-                body: GoogleMap(
-                    onMapCreated: _onMapcreated,
-                    zoomControlsEnabled: false,
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
-                    circles: _circle,
-                    markers: _markers,
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(23.8103, 90.4125), zoom: 15)));
-          } else {
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        });
+    return Scaffold(
+        appBar: CustomAppbar(_myHomeState),
+        drawer: CustomDrawer(),
+        body: GoogleMap(
+            onMapCreated: _onMapcreated,
+            zoomControlsEnabled: false,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            circles: _circle,
+            markers: _markers,
+            initialCameraPosition: _initialCamera));
   }
 
-  Future<DocumentSnapshot> getUser() async {
-    return await _firestore
-        .collection('Users')
-        .doc(_auth.currentUser.uid)
-        .get();
+  getUser() async {
+    var snapshot =
+        await _firestore.collection('Users').doc(_auth.currentUser.uid).get();
+    balance.value = snapshot.data()['balance'];
+    print(balance.of(context));
   }
 
   void _onMapcreated(GoogleMapController controller) {
     controller.setMapStyle(MapStyle.mapStyle);
-    //_circle.add(
-    //Circle(circleId: CircleId("1"), center: Data.mapCenter, radius: 200));
+    setState(() {
+      _circle.add(Circle(
+          circleId: CircleId("1"),
+          center: Data.mapCenter,
+          radius: 500,
+          strokeWidth: 3));
+
+      _markers.add(Marker(
+        markerId: MarkerId("Hello1"),
+        icon: marker,
+        position: LatLng(22.939655, 91.284065),
+      ));
+    });
   }
 
   getVehicles() async {
