@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "502875271948",
+    "project_id": "bikesharing-db6f3",
+    "storage_bucket": "bikesharing-db6f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502875271948:android:d9d52444a54d2de7340f29",
+        "android_client_info": {
+          "package_name": "com.deb.bikesharingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "502875271948-4qm3cv18qe0s2mefcsre4u5tl3mq6mue.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deb.bikesharingapp",
+            "certificate_hash": "cd4339662c5ea0288ab4f847f21262c10d7c2f0f"
+          }
+        },
+        {
+          "client_id": "502875271948-b8r9immr6i1jddsl63l9qtahmgfjve5p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAV1mZtm5Yj5FyIpMLWco9QSYViTakOBWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "502875271948-b8r9immr6i1jddsl63l9qtahmgfjve5p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
