@@ -17,6 +17,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:bikesharingapp/Global/mapStyle.dart';
 import 'package:bikesharingapp/model/LatLong.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = 'home_screen';
@@ -39,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   double lon;
   bool isPermission = false;
   BitmapDescriptor marker;
+  DatabaseReference _reference = FirebaseDatabase.instance.reference();
   Set<Circle> _circle = {};
   Set<Marker> _markers = {};
   static final CameraPosition _initialCamera =
@@ -99,23 +101,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getVehicles() async {
     Set<Marker> list = {};
-    CollectionReference ref = _firestore.collection('vehicles');
+    /*CollectionReference ref = _firestore.collection('vehicles');
     await ref.get().then((value) {
       for (int i = 0; i < value.docs.length; i++) {
         //print(value.docs[i].data()["cordinate"].latitude);
-        print(value.docs[i].id);
-        GeoPoint geoPoint = value.docs[i].data()['cordinate'];
-        Marker _marker = new Marker(
-          markerId: MarkerId(value.docs[i].id),
-          position: LatLng(geoPoint.latitude, geoPoint.longitude),
-          icon: marker,
-        );
-        list.add(_marker);
+        if (!value.docs[i].data()['active']) {
+          GeoPoint geoPoint = value.docs[i].data()['cordinate'];
+          Marker _marker = new Marker(
+            markerId: MarkerId(value.docs[i].id),
+            position: LatLng(geoPoint.latitude, geoPoint.longitude),
+            icon: marker,
+          );
+          list.add(_marker);
+        }
       }
-    });
-    setState(() {
-      this._markers = list;
-      print(_markers.length);
+    });*/
+    Stream<QuerySnapshot> stream =
+        _firestore.collection('vehicles').snapshots();
+    stream.listen((event) {
+      event.docs.forEach((element) {
+        print(element.id);
+        if (!element.data()['active']) {
+          GeoPoint geoPoint = element.data()['cordinate'];
+          Marker _marker = new Marker(
+            markerId: MarkerId(element.id),
+            position: LatLng(geoPoint.latitude, geoPoint.longitude),
+            icon: marker,
+          );
+          list.add(_marker);
+        }
+      });
+      setState(() {
+        this._markers = list;
+        print(_markers.length);
+      });
     });
   }
 }
