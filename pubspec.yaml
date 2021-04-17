@@ -44,6 +44,7 @@ dependencies:
   google_maps_flutter: ^0.5.26+4
   geolocator: ^7.0.3
   firebase_database: ^6.1.2
+  webview_flutter: ^2.0.4
 
 
 

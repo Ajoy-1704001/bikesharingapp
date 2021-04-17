@@ -1,5 +1,9 @@
 import 'package:bikesharingapp/Global/colors.dart';
+import 'package:bikesharingapp/Global/data.dart';
 import 'package:bikesharingapp/screens/home_screen.dart';
+import 'package:bikesharingapp/screens/bkash_screen.dart';
+import 'package:bikesharingapp/screens/login_screen.dart';
+import 'package:bikesharingapp/screens/recharge_screen.dart';
 import 'package:bikesharingapp/widget/drawerListTileWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +13,7 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.fromLTRB(15, 15, 15, 40),
         child: Column(children: [
           DrawerHeader(
             margin: EdgeInsets.fromLTRB(0, 10, 0, 8),
@@ -21,7 +25,7 @@ class CustomDrawer extends StatelessWidget {
                   radius: 40,
                 ),
                 Text(
-                  "Ajoy Deb Nath",
+                  "${mobile.of(context)}",
                   style: TextStyle(
                       color: ColorCode.mainColor,
                       fontSize: 18,
@@ -29,7 +33,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Text("Balance :"), Text("0.0")],
+                  children: [Text("Balance :"), Text("${balance.of(context)}")],
                 )
               ],
             ),
@@ -54,7 +58,7 @@ class CustomDrawer extends StatelessWidget {
                 Icons.monetization_on,
                 color: ColorCode.mainColor,
               ),
-              HomeScreen.id),
+              RechargeScreen.id),
           MenuTile(
               "Settings",
               Icon(
@@ -75,7 +79,8 @@ class CustomDrawer extends StatelessWidget {
                 child: ListTile(
                   onTap: () {
                     FirebaseAuth.instance.signOut();
-                    // Todo: pop korte hobe ekebbare
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, LoginScreen.id, (route) => false);
                   },
                   title: Text("Log Out",
                       style:

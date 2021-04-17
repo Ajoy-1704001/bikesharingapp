@@ -33,6 +33,7 @@ class _BackgroundScreenState extends State<BackgroundScreen> {
       Navigator.pushNamedAndRemoveUntil(
           context, HomeScreen.id, (route) => false);
     }
-    Navigator.pushNamedAndRemoveUntil(context, HomeScreen.id, (route) => false);
+    await Geolocator.openAppSettings();
+    await Geolocator.openLocationSettings();
   }
 }

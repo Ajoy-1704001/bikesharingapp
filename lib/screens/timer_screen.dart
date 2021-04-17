@@ -3,6 +3,7 @@ import 'package:bikesharingapp/Global/data.dart';
 import 'package:bikesharingapp/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:simple_timer/simple_timer.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -18,6 +19,7 @@ class _TimerScreenState extends State<TimerScreen>
   final StopWatchTimer _stopWatchTimer = StopWatchTimer();
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   Future<DocumentSnapshot> data;
+  Position position;
   GlobalKey _key = GlobalKey();
   @override
   void initState() {
@@ -150,22 +152,34 @@ class _TimerScreenState extends State<TimerScreen>
                         fontWeight: FontWeight.bold))),
             TextButton(
                 onPressed: () async {
-                  // todo: check korte hobe nirddisto radius e ache kina
-                  _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
-                  await _firestore
-                      .collection("vehicles")
-                      .doc(barCode.of(context))
-                      .update({'active': false, 'current_uid': ""});
-                  int minute = StopWatchTimer.getRawMinute(
-                      _stopWatchTimer.rawTime.valueWrapper.value);
-                  double _bal =
-                      double.parse(balance.of(context)) - (minute * 0.6);
-                  await _firestore
-                      .collection("Users")
-                      .doc(uid.of(context))
-                      .update({'balance': _bal.toString(), 'inUse': ""});
-                  Navigator.pushNamedAndRemoveUntil(
-                      context, HomeScreen.id, (route) => false);
+                  position = await Geolocator.getCurrentPosition();
+                  double distance = Geolocator.distanceBetween(
+                      Data.mapCenter.latitude,
+                      Data.mapCenter.longitude,
+                      position.latitude,
+                      position.longitude);
+                  print(distance);
+                  if (distance > Data.radius) {
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please park inside the zone")));
+                  } else {
+                    _stopWatchTimer.onExecute.add(StopWatchExecute.stop);
+                    await _firestore
+                        .collection("vehicles")
+                        .doc(barCode.of(context))
+                        .update({'active': false, 'current_uid': ""});
+                    int minute = StopWatchTimer.getRawMinute(
+                        _stopWatchTimer.rawTime.valueWrapper.value);
+                    double _bal =
+                        double.parse(balance.of(context)) - (minute * 0.6);
+                    await _firestore
+                        .collection("Users")
+                        .doc(uid.of(context))
+                        .update({'balance': _bal.toString(), 'inUse': ""});
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, HomeScreen.id, (route) => false);
+                  }
                 },
                 child: Text("Lock",
                     style: TextStyle(

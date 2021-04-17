@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/timer_screen.dart';
 import 'package:shared_value/shared_value.dart';
+import 'screens/bkash_screen.dart';
+import 'screens/recharge_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +46,10 @@ class MyApp extends StatelessWidget {
         OtpScreen.id: (context) =>
             OtpScreen(ModalRoute.of(context).settings.arguments),
         TimerScreen.id: (context) => TimerScreen(),
-        BackgroundScreen.id: (context) => BackgroundScreen()
+        BackgroundScreen.id: (context) => BackgroundScreen(),
+        BkashScreen.id: (context) =>
+            BkashScreen(ModalRoute.of(context).settings.arguments),
+        RechargeScreen.id: (context) => RechargeScreen()
       },
       initialRoute: SplashScreen.id,
     );

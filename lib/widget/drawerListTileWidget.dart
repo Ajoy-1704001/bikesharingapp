@@ -19,8 +19,7 @@ class MenuTile extends StatelessWidget {
       leading: _icon,
       onTap: () {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, HomeScreen.id);
-        // TODO: implement navigation, just function e j string ta ashbe oita boshabo
+        Navigator.pushNamed(context, _navigation);
       },
     );
   }

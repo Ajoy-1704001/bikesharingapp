@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Set<Circle> _circle = {};
   Set<Marker> _markers = {};
   static final CameraPosition _initialCamera =
-      CameraPosition(target: LatLng(23.8103, 90.4125), zoom: 15);
+      CameraPosition(target: LatLng(23.8103, 90.4125), zoom: 13);
 
   getData() {
     getUser();
@@ -81,22 +81,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getUser() async {
-    var snapshot =
-        await _firestore.collection('Users').doc(_auth.currentUser.uid).get();
-    balance.value = snapshot.data()['balance'];
-    print(balance.of(context));
+    try {
+      var snapshot =
+          await _firestore.collection('Users').doc(_auth.currentUser.uid).get();
+      Stream<DocumentSnapshot> _stream =
+          _firestore.collection('Users').doc(_auth.currentUser.uid).snapshots();
+      balance.value = snapshot.data()['balance'];
+      mobile.value = snapshot.data()['phone'];
+      _stream.listen((event) {
+        balance.value = event.data()['balance'];
+      });
+
+      print(balance.of(context));
+    } catch (e) {
+      print("get user" + e);
+    }
   }
 
   void _onMapcreated(GoogleMapController controller) {
-    controller.setMapStyle(MapStyle.mapStyle);
-    setState(() {
-      _circle.add(Circle(
-          circleId: CircleId("1"),
-          center: Data.mapCenter,
-          radius: 2000,
-          strokeWidth: 3));
-      getVehicles();
-    });
+    try {
+      controller.setMapStyle(MapStyle.mapStyle);
+      setState(() {
+        _circle.add(Circle(
+            circleId: CircleId("1"),
+            center: Data.mapCenter,
+            radius: Data.radius,
+            strokeWidth: 3));
+        getVehicles();
+      });
+    } catch (e) {
+      print("on create" + e);
+    }
   }
 
   getVehicles() async {
@@ -116,25 +131,29 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });*/
-    Stream<QuerySnapshot> stream =
-        _firestore.collection('vehicles').snapshots();
-    stream.listen((event) {
-      event.docs.forEach((element) {
-        print(element.id);
-        if (!element.data()['active']) {
-          GeoPoint geoPoint = element.data()['cordinate'];
-          Marker _marker = new Marker(
-            markerId: MarkerId(element.id),
-            position: LatLng(geoPoint.latitude, geoPoint.longitude),
-            icon: marker,
-          );
-          list.add(_marker);
-        }
+    try {
+      Stream<QuerySnapshot> stream =
+          _firestore.collection('vehicles').snapshots();
+      stream.listen((event) {
+        event.docs.forEach((element) {
+          print(element.id);
+          if (!element.data()['active']) {
+            GeoPoint geoPoint = element.data()['cordinate'];
+            Marker _marker = new Marker(
+              markerId: MarkerId(element.id),
+              position: LatLng(geoPoint.latitude, geoPoint.longitude),
+              icon: marker,
+            );
+            list.add(_marker);
+          }
+        });
+        setState(() {
+          this._markers = list;
+          print(_markers.length);
+        });
       });
-      setState(() {
-        this._markers = list;
-        print(_markers.length);
-      });
-    });
+    } catch (e) {
+      print("getvehicl;e" + e);
+    }
   }
 }
