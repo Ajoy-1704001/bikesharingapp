@@ -170,6 +170,6 @@ class _LoginScreenState extends State<LoginScreen>
             child: child,
           );
         },
-        transitionDuration: Duration(milliseconds: 1300));
+        transitionDuration: Duration(milliseconds: 1000));
   }
 }

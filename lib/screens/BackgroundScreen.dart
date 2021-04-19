@@ -32,8 +32,9 @@ class _BackgroundScreenState extends State<BackgroundScreen> {
         permission == LocationPermission.whileInUse) {
       Navigator.pushNamedAndRemoveUntil(
           context, HomeScreen.id, (route) => false);
+    } else {
+      await Geolocator.openAppSettings();
+      await Geolocator.openLocationSettings();
     }
-    await Geolocator.openAppSettings();
-    await Geolocator.openLocationSettings();
   }
 }

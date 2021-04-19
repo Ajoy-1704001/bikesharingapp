@@ -197,27 +197,31 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   _verifyNumber() async {
-    ;
     await _auth.verifyPhoneNumber(
         phoneNumber: "+88$_num",
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await _auth.signInWithCredential(credential).then((value) async {
-            FirebaseFirestore firestore = FirebaseFirestore.instance;
-            CollectionReference _ref = firestore.collection("Users");
-            _ref.doc(value.user.uid).get().then((_value) {
-              if (_value.exists) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, BackgroundScreen.id, (route) => false);
-              } else {
-                _addUser(value.user.uid);
-                Navigator.pushNamedAndRemoveUntil(
-                    context, BackgroundScreen.id, (route) => false);
-              }
+          try {
+            await _auth.signInWithCredential(credential).then((value) async {
+              FirebaseFirestore firestore = FirebaseFirestore.instance;
+              CollectionReference _ref = firestore.collection("Users");
+              _ref.doc(value.user.uid).get().then((_value) {
+                if (_value.exists) {
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, BackgroundScreen.id, (route) => false);
+                } else {
+                  _addUser(value.user.uid);
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, BackgroundScreen.id, (route) => false);
+                }
+              });
+              //Navigator.pushNamedAndRemoveUntil(
+              //context, HomeScreen.id, (route) => false);
             });
-            //Navigator.pushNamedAndRemoveUntil(
-            //context, HomeScreen.id, (route) => false);
-          });
-
+          } catch (e) {
+            FocusScope.of(context).unfocus();
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Network error, Try again")));
+          }
           //Navigator.pushReplacementNamed(context, HomeScreen.id));
         },
         verificationFailed: (FirebaseAuthException e) {
@@ -246,8 +250,10 @@ class _OtpScreenState extends State<OtpScreen> {
 
   _addUser(String uid) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    double balance = 0;
+    String balance = "0.00";
     CollectionReference _reference = firestore.collection("Users");
-    await _reference.doc(uid).set({'phone': _num, 'balance': balance});
+    await _reference
+        .doc(uid)
+        .set({'phone': _num, 'balance': balance, 'inUse': ""});
   }
 }

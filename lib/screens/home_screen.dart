@@ -81,21 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getUser() async {
-    try {
-      var snapshot =
-          await _firestore.collection('Users').doc(_auth.currentUser.uid).get();
-      Stream<DocumentSnapshot> _stream =
-          _firestore.collection('Users').doc(_auth.currentUser.uid).snapshots();
-      balance.value = snapshot.data()['balance'];
-      mobile.value = snapshot.data()['phone'];
-      _stream.listen((event) {
-        balance.value = event.data()['balance'];
-      });
-
-      print(balance.of(context));
-    } catch (e) {
-      print("get user" + e);
-    }
+    var snapshot =
+        await _firestore.collection('Users').doc(_auth.currentUser.uid).get();
+    Stream<DocumentSnapshot> _stream =
+        _firestore.collection('Users').doc(_auth.currentUser.uid).snapshots();
+    balance.value = snapshot.data()['balance'];
+    mobile.value = snapshot.data()['phone'];
+    _stream.listen((event) {
+      balance.value = event.data()['balance'];
+    });
   }
 
   void _onMapcreated(GoogleMapController controller) {
