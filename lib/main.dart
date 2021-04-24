@@ -1,10 +1,13 @@
 import 'package:bikesharingapp/Global/colors.dart';
 import 'package:bikesharingapp/screens/home_screen.dart';
 import 'package:bikesharingapp/screens/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:bikesharingapp/screens/trip_screen.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'screens/splash_screen.dart';
 import 'screens/otp_screen.dart';
+import 'screens/settings_screen.dart';
 import 'screens/started_screen.dart';
 import 'screens/BackgroundScreen.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +52,9 @@ class MyApp extends StatelessWidget {
         BackgroundScreen.id: (context) => BackgroundScreen(),
         BkashScreen.id: (context) =>
             BkashScreen(ModalRoute.of(context).settings.arguments),
-        RechargeScreen.id: (context) => RechargeScreen()
+        RechargeScreen.id: (context) => RechargeScreen(),
+        SettingScreen.id: (context) => SettingScreen(),
+        TripScreen.id: (context) => TripScreen()
       },
       initialRoute: SplashScreen.id,
     );

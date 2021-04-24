@@ -4,9 +4,11 @@ import 'package:bikesharingapp/screens/home_screen.dart';
 import 'package:bikesharingapp/screens/bkash_screen.dart';
 import 'package:bikesharingapp/screens/login_screen.dart';
 import 'package:bikesharingapp/screens/recharge_screen.dart';
+import 'package:bikesharingapp/screens/trip_screen.dart';
 import 'package:bikesharingapp/widget/drawerListTileWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:bikesharingapp/screens/settings_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   @override
@@ -51,7 +53,7 @@ class CustomDrawer extends StatelessWidget {
                 Icons.bike_scooter,
                 color: ColorCode.mainColor,
               ),
-              HomeScreen.id),
+              TripScreen.id),
           MenuTile(
               "Recharge",
               Icon(
@@ -65,7 +67,7 @@ class CustomDrawer extends StatelessWidget {
                 Icons.settings,
                 color: ColorCode.mainColor,
               ),
-              HomeScreen.id),
+              SettingScreen.id),
           MenuTile(
               "Help & Support",
               Icon(

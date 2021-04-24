@@ -14,27 +14,35 @@ class _BackgroundScreenState extends State<BackgroundScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _checkpermissionAndLocation();
+    hello();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+        body: Center(
+      child: CircularProgressIndicator(),
+    ));
   }
 
-  void _checkpermissionAndLocation() async {
-    if (await Geolocator.checkPermission() == LocationPermission.denied) {
+  Future _checkpermissionAndLocation() async {
+    if (await Geolocator.checkPermission() == LocationPermission.denied ||
+        await Geolocator.checkPermission() ==
+            LocationPermission.deniedForever) {
       permission = await Geolocator.requestPermission();
+      print(permission);
+      return permission;
+    } else {
+      permission = await Geolocator.checkPermission();
+      return permission;
     }
-    if (permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse) {
+  }
+
+  void hello() async {
+    LocationPermission p = await _checkpermissionAndLocation();
+    if (p == LocationPermission.always || p == LocationPermission.whileInUse) {
       Navigator.pushNamedAndRemoveUntil(
           context, HomeScreen.id, (route) => false);
-    } else {
-      await Geolocator.openAppSettings();
-      await Geolocator.openLocationSettings();
     }
   }
 }

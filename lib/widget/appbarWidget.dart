@@ -141,7 +141,8 @@ class CustomAppbar extends StatelessWidget with PreferredSizeWidget {
                             .doc(code)
                             .update({
                           'active': true,
-                          'current_uid': uid.of(context)
+                          'current_uid': uid.of(context),
+                          'mobile': mobile.of(context)
                         });
                         await _firestore
                             .collection("Users")

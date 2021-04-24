@@ -4,6 +4,7 @@ import 'package:bikesharingapp/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:simple_timer/simple_timer.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -168,15 +169,31 @@ class _TimerScreenState extends State<TimerScreen>
                     await _firestore
                         .collection("vehicles")
                         .doc(barCode.of(context))
-                        .update({'active': false, 'current_uid': ""});
+                        .update(
+                            {'active': false, 'current_uid': "", 'mobile': ""});
                     int minute = StopWatchTimer.getRawMinute(
                         _stopWatchTimer.rawTime.valueWrapper.value);
                     double _bal =
                         double.parse(balance.of(context)) - (minute * 0.6);
+                    double cost = minute * 0.6;
+                    String formattedDateTime =
+                        DateFormat('yyyy-MM-dd \n kk:mm:ss')
+                            .format(DateTime.now())
+                            .toString();
                     await _firestore
                         .collection("Users")
                         .doc(uid.of(context))
-                        .update({'balance': _bal.toString(), 'inUse': ""});
+                        .update({
+                      'balance': _bal.toString(),
+                      'inUse': "",
+                      'trips': FieldValue.arrayUnion([
+                        {
+                          'cost': cost.toString(),
+                          'date': formattedDateTime,
+                          'code': barCode.of(context)
+                        }
+                      ])
+                    });
                     Navigator.pushNamedAndRemoveUntil(
                         context, HomeScreen.id, (route) => false);
                   }

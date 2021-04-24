@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 import 'package:bikesharingapp/Global/colors.dart';
 import 'package:bikesharingapp/Global/data.dart';
 import 'package:bikesharingapp/screens/timer_screen.dart';
@@ -57,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
     getData();
     customMarker();
     uid.value = _auth.currentUser.uid;
+
     super.initState();
   }
 
@@ -87,8 +89,15 @@ class _HomeScreenState extends State<HomeScreen> {
         _firestore.collection('Users').doc(_auth.currentUser.uid).snapshots();
     balance.value = snapshot.data()['balance'];
     mobile.value = snapshot.data()['phone'];
+    email.value = snapshot.data()['email'];
+    bkash.value = snapshot.data()['bkash'];
+    name.value = snapshot.data()['name'];
     _stream.listen((event) {
       balance.value = event.data()['balance'];
+      email.value = event.data()['email'];
+      bkash.value = event.data()['bkash'];
+      name.value = event.data()['name'];
+      print(name.of(context));
     });
   }
 

@@ -252,8 +252,13 @@ class _OtpScreenState extends State<OtpScreen> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     String balance = "0.00";
     CollectionReference _reference = firestore.collection("Users");
-    await _reference
-        .doc(uid)
-        .set({'phone': _num, 'balance': balance, 'inUse': ""});
+    await _reference.doc(uid).set({
+      'phone': _num,
+      'balance': balance,
+      'inUse': "",
+      'name': "",
+      'bkash': "",
+      'email': ''
+    });
   }
 }

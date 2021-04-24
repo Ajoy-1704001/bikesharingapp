@@ -14,3 +14,6 @@ final SharedValue<String> uid = SharedValue(value: "");
 final SharedValue<String> balance = SharedValue(value: "0.0");
 final SharedValue<String> barCode = SharedValue(value: "");
 final SharedValue<String> mobile = SharedValue(value: "");
+final SharedValue<String> name = SharedValue(value: "");
+final SharedValue<String> email = SharedValue(value: "");
+final SharedValue<String> bkash = SharedValue(value: "");
