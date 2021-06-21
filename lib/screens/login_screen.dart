@@ -40,114 +40,117 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(color: Colors.white),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image(
-                  fit: BoxFit.contain,
-                  image: AssetImage('assets/images/bikeapp.png'),
-                  width: 150,
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(color: Colors.white),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image(
+                    fit: BoxFit.contain,
+                    image: AssetImage('assets/images/bikeapp.png'),
+                    width: 150,
+                  ),
                 ),
               ),
-            ),
-            SlideTransition(
-              position: offset,
-              child: Container(
-                width: double.infinity,
-                child: Card(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          "Sign In",
-                          style: TextStyle(
-                              fontFamily: 'Ubuntu',
-                              color: ColorCode.textFieldColor,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "You'll receive a 4 digit code for Phone Number Verification",
-                          style: TextStyle(fontSize: 17),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Form(
-                          key: _loginStateFormKey,
-                          child: TextFormField(
-                            validator: (input) => input.trim().length != 11
-                                ? "Not a valid number"
-                                : null,
-                            onSaved: (input) => widget.number = input,
-                            textAlignVertical: TextAlignVertical.center,
-                            keyboardType: TextInputType.phone,
+              SlideTransition(
+                position: offset,
+                child: Container(
+                  width: double.infinity,
+                  child: Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            "Sign In",
                             style: TextStyle(
-                              fontSize: 20,
-                            ),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 13),
-                              isDense: true,
-                              prefixIconConstraints:
-                                  BoxConstraints(maxHeight: 40, maxWidth: 60),
-                              prefixIcon: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 15),
-                                child: Image.asset(
-                                  'assets/images/bd.png',
-                                ),
+                                fontFamily: 'Ubuntu',
+                                color: ColorCode.textFieldColor,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "You'll receive a 4 digit code for Phone Number Verification",
+                            style: TextStyle(fontSize: 17),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Form(
+                            key: _loginStateFormKey,
+                            child: TextFormField(
+                              validator: (input) => input.trim().length != 11
+                                  ? "Not a valid number"
+                                  : null,
+                              onSaved: (input) => widget.number = input,
+                              textAlignVertical: TextAlignVertical.center,
+                              keyboardType: TextInputType.phone,
+                              style: TextStyle(
+                                fontSize: 20,
                               ),
-                              prefix: Text("+88"),
-                              labelText: 'Mobile Number',
-                              border: OutlineInputBorder(),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 13),
+                                isDense: true,
+                                prefixIconConstraints:
+                                    BoxConstraints(maxHeight: 40, maxWidth: 60),
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15),
+                                  child: Image.asset(
+                                    'assets/images/bd.png',
+                                  ),
+                                ),
+                                prefix: Text("+88"),
+                                labelText: 'Mobile Number',
+                                border: OutlineInputBorder(),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        ElevatedButton(
-                          onPressed: _submit,
-                          style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all(
-                                  Size(double.infinity, 50))),
-                          child: Text(
-                            "Send OTP",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                          SizedBox(
+                            height: 20,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Text(
-                            "By providing my phone number, I agree & accept the Terms of Service and Privacy policy in use of the app",
-                            textAlign: TextAlign.center,
+                          ElevatedButton(
+                            onPressed: _submit,
+                            style: ButtonStyle(
+                                minimumSize: MaterialStateProperty.all(
+                                    Size(double.infinity, 50))),
+                            child: Text(
+                              "Send OTP",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              "By providing my phone number, I agree & accept the Terms of Service and Privacy policy in use of the app",
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -170,6 +173,6 @@ class _LoginScreenState extends State<LoginScreen>
             child: child,
           );
         },
-        transitionDuration: Duration(milliseconds: 1000));
+        transitionDuration: Duration(milliseconds: 800));
   }
 }

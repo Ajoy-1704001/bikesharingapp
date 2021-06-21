@@ -1,6 +1,7 @@
 import 'package:bikesharingapp/Global/colors.dart';
 import 'package:bikesharingapp/screens/home_screen.dart';
 import 'package:bikesharingapp/screens/login_screen.dart';
+import 'package:bikesharingapp/screens/support.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:bikesharingapp/screens/trip_screen.dart';
@@ -20,6 +21,10 @@ import 'screens/recharge_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.white, statusBarIconBrightness: Brightness.dark));
   runApp(SharedValue.wrapApp(MyApp()));
 }
 
@@ -27,7 +32,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -54,7 +58,8 @@ class MyApp extends StatelessWidget {
             BkashScreen(ModalRoute.of(context).settings.arguments),
         RechargeScreen.id: (context) => RechargeScreen(),
         SettingScreen.id: (context) => SettingScreen(),
-        TripScreen.id: (context) => TripScreen()
+        TripScreen.id: (context) => TripScreen(),
+        SupportScreen.id: (context) => SupportScreen()
       },
       initialRoute: SplashScreen.id,
     );

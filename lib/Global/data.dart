@@ -6,8 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Data {
   static String qrData;
-  static LatLng mapCenter = LatLng(23.8103, 90.4125);
-  static double radius = 2000;
 }
 
 final SharedValue<String> uid = SharedValue(value: "");
@@ -17,3 +15,9 @@ final SharedValue<String> mobile = SharedValue(value: "");
 final SharedValue<String> name = SharedValue(value: "");
 final SharedValue<String> email = SharedValue(value: "");
 final SharedValue<String> bkash = SharedValue(value: "");
+
+final SharedValue<LatLng> mapCenter = SharedValue(value: LatLng(0, 0));
+final SharedValue<double> radius = SharedValue(value: 2000.0);
+
+final SharedValue<String> token = SharedValue(value: "");
+final SharedValue<String> link = SharedValue(value: "");

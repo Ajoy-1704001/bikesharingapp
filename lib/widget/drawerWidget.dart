@@ -4,6 +4,7 @@ import 'package:bikesharingapp/screens/home_screen.dart';
 import 'package:bikesharingapp/screens/bkash_screen.dart';
 import 'package:bikesharingapp/screens/login_screen.dart';
 import 'package:bikesharingapp/screens/recharge_screen.dart';
+import 'package:bikesharingapp/screens/support.dart';
 import 'package:bikesharingapp/screens/trip_screen.dart';
 import 'package:bikesharingapp/widget/drawerListTileWidget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,9 +23,17 @@ class CustomDrawer extends StatelessWidget {
             child: Column(
               children: [
                 CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/user_icon.png'),
+                  backgroundImage:
+                      link.of(context) != "" || link.of(context) != null
+                          ? NetworkImage(
+                              link.of(context),
+                            )
+                          : AssetImage('assets/images/user_icon.png'),
                   backgroundColor: Colors.white,
                   radius: 40,
+                ),
+                SizedBox(
+                  height: 8,
                 ),
                 Text(
                   "${mobile.of(context)}",
@@ -40,13 +49,24 @@ class CustomDrawer extends StatelessWidget {
               ],
             ),
           ),
-          MenuTile(
-              "Home",
-              Icon(
-                Icons.home,
-                color: ColorCode.mainColor,
-              ),
-              HomeScreen.id),
+          Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: ColorCode.mainColor),
+              child: ListTile(
+                title: Text(
+                  "Home",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                leading: Icon(
+                  Icons.home,
+                  color: Colors.white,
+                ),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, HomeScreen.id);
+                },
+              )),
           MenuTile(
               "Trips",
               Icon(
@@ -74,7 +94,7 @@ class CustomDrawer extends StatelessWidget {
                 Icons.help_outlined,
                 color: ColorCode.mainColor,
               ),
-              HomeScreen.id),
+              SupportScreen.id),
           Expanded(
             child: Align(
                 alignment: FractionalOffset.bottomCenter,

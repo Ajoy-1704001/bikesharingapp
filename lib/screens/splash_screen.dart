@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:bikesharingapp/screens/BackgroundScreen.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String id = "splash_screen";
@@ -27,6 +28,13 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacementNamed(context, BackgroundScreen.id);
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    precacheImage(AssetImage('assets/images/bikeapp.png'), context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -54,7 +62,13 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: 280,
               ),
             ),
-            CircularProgressIndicator()
+            SizedBox(
+              width: 80,
+              child: LoadingIndicator(
+                indicatorType: Indicator.pacman,
+                color: Colors.blue,
+              ),
+            )
           ],
         ),
       ),

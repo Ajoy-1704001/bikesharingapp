@@ -1,5 +1,6 @@
 import 'package:bikesharingapp/Global/colors.dart';
 import 'package:bikesharingapp/Global/data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:bikesharingapp/screens/bkash_screen.dart';
 
@@ -12,6 +13,7 @@ class RechargeScreen extends StatefulWidget {
 
 class _RechargeScreenState extends State<RechargeScreen> {
   GlobalKey<FormState> _AmountStateFormKey = new GlobalKey<FormState>();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,13 +131,22 @@ class _RechargeScreenState extends State<RechargeScreen> {
     );
   }
 
-  void _submit() {
+  void _submit() async {
     if (_AmountStateFormKey.currentState.validate()) {
       _AmountStateFormKey.currentState.save();
-      Navigator.pushReplacement(
+      /*Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => (BkashScreen(widget.amount))));
+              builder: (context) => (BkashScreen(widget.amount))));*/
+      double bal =
+          double.parse(balance.of(context)) + double.parse(widget.amount);
+      await firestore
+          .collection('Users')
+          .doc(uid.of(context))
+          .update({'balance': bal.toString()});
+      _AmountStateFormKey.currentState.reset();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Recharge Successful")));
     }
   }
 }

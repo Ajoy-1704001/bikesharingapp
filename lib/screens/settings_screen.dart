@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:bikesharingapp/Global/data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart' as per;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class SettingScreen extends StatefulWidget {
   static const String id = "settings_screen";
@@ -20,11 +24,33 @@ class _SettingScreenState extends State<SettingScreen> {
   GlobalKey<FormState> _loginStateFormKey = new GlobalKey<FormState>();
   GlobalKey<FormState> _StateFormKey = new GlobalKey<FormState>();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  bool permissionGranted;
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+  File _image;
+  ImagePicker picker = ImagePicker();
+  String downloadUrl;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getStoragePermission();
+  }
+
+  Future _getStoragePermission() async {
+    if (await Permission.storage.request().isGranted) {
+      print("1");
+      setState(() {
+        permissionGranted = true;
+      });
+    } else if (await Permission.storage.request().isPermanentlyDenied) {
+      await per.openAppSettings();
+    } else if (await Permission.storage.request().isDenied) {
+      print("2");
+      setState(() {
+        permissionGranted = false;
+      });
+    }
   }
 
   @override
@@ -33,12 +59,45 @@ class _SettingScreenState extends State<SettingScreen> {
     super.dispose();
   }
 
+  Future imageSelect() async {
+    var pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() async {
+      if (pickedFile != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Uploading..."),
+        ));
+        _image = File(pickedFile.path);
+        await firebase_storage.FirebaseStorage.instance
+            .ref('uploads/' + uid.of(context) + '.jpg')
+            .putFile(_image);
+        await downloadURLExample();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Uploaded!!!"),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Nothing Selected"),
+        ));
+      }
+    });
+  }
+
+  Future<void> downloadURLExample() async {
+    link.value = await firebase_storage.FirebaseStorage.instance
+        .ref('uploads/' + uid.of(context) + '.jpg')
+        .getDownloadURL();
+    firestore
+        .collection('Users')
+        .doc(uid.of(context))
+        .update({"picture": link.of(context)});
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFECECEC),
       appBar: AppBar(
-        backgroundColor: Color(0xFFECECEC),
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
           "Settings",
@@ -101,6 +160,17 @@ class _SettingScreenState extends State<SettingScreen> {
               ),
             ),
           ),
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.white,
+            backgroundImage: link.of(context) != "" || link.of(context) != null
+                ? NetworkImage(
+                    link.of(context),
+                  )
+                : AssetImage('assets/images/user_icon.png'),
+          ),
+          TextButton(
+              onPressed: imageSelect, child: Text("Change Profile Picture")),
           Form(
               key: _loginStateFormKey,
               child: Column(

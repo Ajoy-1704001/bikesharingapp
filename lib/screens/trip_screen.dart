@@ -1,6 +1,8 @@
 import 'package:bikesharingapp/Global/data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 class TripScreen extends StatefulWidget {
   static const String id = 'trip_screen';
@@ -56,44 +58,67 @@ class _TripScreenState extends State<TripScreen> {
         shrinkWrap: true,
         itemCount: snapshot.data.get('Trips').length,
         itemBuilder: (context, index) {
-          return Column(
+          return Stack(
             children: [
-              ListTile(
-                  // Access the fields as defined in FireStore
-                  title: Text(
-                    snapshot.data.get('Trips')[index]['date'],
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  ),
-                  subtitle: Text(
-                    "Cycle Code: ${snapshot.data.get('Trips')[index]['code']}",
-                  ),
-                  trailing: SizedBox(
-                    width: 80,
-                    child: Column(
-                      children: [
-                        Text('Cost'),
-                        Row(
-                          children: [
-                            Text(
-                              "-${snapshot.data.get('Trips')[index]['cost']}",
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17),
-                            ),
-                            Image.asset(
-                              'assets/images/taka.png',
-                              width: 20,
-                              height: 14,
-                            )
-                          ],
-                        )
-                      ],
+              Padding(
+                padding: const EdgeInsets.only(left: 15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        snapshot.data.get('Trips')[index]['date'],
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                        ),
+                      ),
                     ),
-                  )),
-              Divider(
-                thickness: 1,
-              )
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "${snapshot.data.get('Trips')[index]['code']}",
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Divider(
+                        thickness: 1,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: SizedBox(
+                  width: 80,
+                  child: Column(
+                    children: [
+                      Text(''),
+                      Row(
+                        children: [
+                          Text(
+                            "-${snapshot.data.get('Trips')[index]['cost']}",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17),
+                          ),
+                          Image.asset(
+                            'assets/images/taka.png',
+                            width: 20,
+                            height: 14,
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
             ],
           );
         },
@@ -106,7 +131,12 @@ class _TripScreenState extends State<TripScreen> {
       );
     } else {
       // Still loading
-      return CircularProgressIndicator();
+      return SizedBox(
+          width: 40,
+          child: LoadingIndicator(
+            indicatorType: Indicator.ballClipRotate,
+            color: Colors.blue,
+          ));
     }
   }
 }
